@@ -15,6 +15,9 @@ const config = () => {
         password: connectionOptions.password,
         database: connectionOptions.database,
         logging: true,
+        ssl: {
+          rejectUnauthorized: false,
+        },
         synchronize: false,
         entities: ['dist/src/**/models/*.entity.js'],
         migrations: ['dist/src/migrations/*.js'],
