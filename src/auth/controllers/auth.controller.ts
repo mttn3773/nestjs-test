@@ -19,12 +19,9 @@ import { LocalAuthGuard } from './../guards/local-auth.guard';
 export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('/signin')
-  async register(
-    @Body() userData: CreateUserDto,
-    @Res() res: Response,
-  ): Promise<IToken> {
+  async register(@Body() userData: CreateUserDto, @Res() res: Response) {
     const token = await this.authService.register(userData, res);
-    return token;
+    return res.status(200).send(token);
   }
   @UseGuards(LocalAuthGuard)
   @Post('/login')
