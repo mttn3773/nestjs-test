@@ -24,7 +24,6 @@ import { Tag } from '../models/tag.entity';
 @Controller('/tag')
 export class TagsController {
   constructor(private tagsService: TagsService) {}
-
   // Create tag with cretor set to current authenticated user
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -36,6 +35,9 @@ export class TagsController {
     );
     return tag;
   }
+
+  // Update with provided id
+  // If current logged user is not creator of mentioned tag throw error
   @Put('/:id')
   @UseGuards(JwtAuthGuard)
   async updateTag(
@@ -47,8 +49,8 @@ export class TagsController {
     const tag = await this.tagsService.updateTag(id, updateTagDto, uid);
     return tag;
   }
-  // Get one tag based on provided id
 
+  // Get one tag based on provided id
   @UseGuards(JwtAuthGuard)
   @Delete('/:id')
   async deleteOne(
