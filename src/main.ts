@@ -14,6 +14,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalFilters(new HttpExceptionFilter());
   app.setGlobalPrefix('/api');
-  await app.listen(3000, () => console.log('Server is running on pot 3000'));
+  await app.listen(process.env.PORT, () =>
+    console.log(`Server is running on pot ${process.env.PORT}`),
+  );
 }
 bootstrap();
