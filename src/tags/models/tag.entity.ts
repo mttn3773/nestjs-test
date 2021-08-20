@@ -8,7 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserTag } from './user-tag.entity';
+import { UserTag } from '../../user-tag/models/user-tag.entity';
 
 @Entity()
 export class Tag extends BaseEntity {

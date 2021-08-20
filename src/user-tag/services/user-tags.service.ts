@@ -1,22 +1,21 @@
-import { AddUserTagsDto } from './../models/add-user-tags.dto';
-import { TagsService } from './tags.service';
+import { CommonTagService } from './../../common-tag/common-tag.service';
 import {
-  Injectable,
   BadRequestException,
+  Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Tag } from '../models/tag.entity';
+import { Tag } from '../../tags/models/tag.entity';
+import { AddUserTagsDto } from '../models/add-user-tags.dto';
 import { UserTag } from '../models/user-tag.entity';
 
 @Injectable()
 export class UserTagsService {
   constructor(
-    @InjectRepository(Tag)
-    private tagsRepository: Repository<Tag>,
     @InjectRepository(UserTag)
     private userTagRepositary: Repository<UserTag>,
+    private commonTagService: CommonTagService,
   ) {}
   async createUserTag(tagId: number, targetId: string): Promise<UserTag> {
     const userTag = this.userTagRepositary.create({ tagId, targetId });
@@ -27,9 +26,7 @@ export class UserTagsService {
     { tags: ids }: AddUserTagsDto,
     uid: string,
   ): Promise<Tag[]> {
-    const tags = await this.tagsRepository.findByIds(ids, {
-      select: ['id', 'name', 'sortOrder'],
-    });
+    const tags = await this.commonTagService.findTagsByIds(ids);
     if (tags.length < ids.length)
       throw new BadRequestException('Не все перечисленные теги существуют');
     const userTagsArr: UserTag[] = [];
@@ -56,6 +53,6 @@ export class UserTagsService {
     return this.userTagRepositary.find({ where: { targetId: uid } });
   }
   findTagsCreatedByUser(uid: string): Promise<Tag[]> {
-    return this.tagsRepository.find({ where: { creatorId: uid } });
+    return this.commonTagService.findTagsCreatedByUser(uid);
   }
 }

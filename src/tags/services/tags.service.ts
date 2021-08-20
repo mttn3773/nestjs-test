@@ -1,11 +1,4 @@
-import { UserTagsService } from './user-tags.service';
-import { UpdateTagDto } from './../models/update-tag.dto';
-import { IQueryParams } from './../models/query-params.interface';
-import { UserTag } from './../models/user-tag.entity';
-import { UsersService } from './../../users/services/users.service';
-import { ITokenPayload } from './../../auth/models/token.interface';
-import { User } from 'src/users/models/user.entity';
-import { CreateTagDto } from './../models/create-tag.dto';
+import { CommonTagService } from './../../common-tag/common-tag.service';
 import {
   BadRequestException,
   Injectable,
@@ -13,16 +6,21 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { Tag } from '../models/tag.entity';
+import { UserTag } from '../../user-tag/models/user-tag.entity';
+import { UserTagsService } from '../../user-tag/services/user-tags.service';
 import { IGetManyTags } from '../models/get-many-tags-response.interface';
+import { Tag } from '../models/tag.entity';
+import { ITokenPayload } from './../../auth/models/token.interface';
+import { CreateTagDto } from './../models/create-tag.dto';
+import { IQueryParams } from './../models/query-params.interface';
+import { UpdateTagDto } from './../models/update-tag.dto';
 
 @Injectable()
 export class TagsService {
   constructor(
     @InjectRepository(Tag)
     private tagsRepository: Repository<Tag>,
-    @InjectRepository(UserTag)
-    private userTagsService: UserTagsService,
+    private commonTagService: CommonTagService,
   ) {}
   async createTag(
     { name, sortOrder = 0 }: CreateTagDto,
@@ -43,7 +41,7 @@ export class TagsService {
     await tag.save();
 
     // Create user tag and add it to user
-    await this.userTagsService.createUserTag(tag.id, uid);
+    await this.commonTagService.createUserTag(tag.id, uid);
     return tag;
   }
 
@@ -54,6 +52,7 @@ export class TagsService {
       .select(['u.nickname', 'u.uid', 't.name', 't.sortOrder'])
       .where({ id: tagId })
       .getOne();
+    if (!tag) throw new BadRequestException('Тег не найден');
     return tag;
   }
   async getManyTags(
@@ -83,6 +82,7 @@ export class TagsService {
   }
   async deleteTag(tagId: number, uid: string) {
     const tag = await this.tagsRepository.findOne(tagId);
+    if (!tag) throw new BadRequestException('Couldnt find this tag');
     this.checkIfUserIsCreator(tag, uid);
     await this.tagsRepository.delete(tag);
   }

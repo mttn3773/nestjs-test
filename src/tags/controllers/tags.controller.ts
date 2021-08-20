@@ -28,17 +28,13 @@ export class TagsController {
   // Create tag with cretor set to current authenticated user
   @UseGuards(JwtAuthGuard)
   @Post()
-  async createTag(
-    @Res() res: Response,
-    @Req() req: Request,
-    @Body() createTagDto: CreateTagDto,
-  ) {
+  async createTag(@Req() req: Request, @Body() createTagDto: CreateTagDto) {
     const { user } = req;
     const { creatorId, ...tag } = await this.tagsService.createTag(
       createTagDto,
       user as ITokenPayload,
     );
-    return res.status(HttpStatus.CREATED).send(tag);
+    return tag;
   }
   @Put('/:id')
   @UseGuards(JwtAuthGuard)

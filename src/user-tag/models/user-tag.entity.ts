@@ -1,15 +1,14 @@
-import { Tag } from './tag.entity';
-import { User } from './../../users/models/user.entity';
 import {
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
   BaseEntity,
-  PrimaryColumn,
+  CreateDateColumn,
+  Entity,
   JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
 } from 'typeorm';
+import { Tag } from '../../tags/models/tag.entity';
+import { User } from '../../users/models/user.entity';
 
 @Entity()
 export class UserTag extends BaseEntity {

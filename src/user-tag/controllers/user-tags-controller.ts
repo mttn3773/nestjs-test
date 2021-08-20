@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   Post,
   Req,
@@ -11,12 +10,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { Tag } from '../models/tag.entity';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { ITokenPayload } from '../../auth/models/token.interface';
+import { Tag } from '../../tags/models/tag.entity';
+import { AddUserTagsDto } from '../models/add-user-tags.dto';
 import { UserTag } from '../models/user-tag.entity';
-import { JwtAuthGuard } from './../../auth/guards/jwt-auth.guard';
-import { ITokenPayload } from './../../auth/models/token.interface';
-import { AddUserTagsDto } from './../models/add-user-tags.dto';
-import { UserTagsService } from './../services/user-tags.service';
+import { UserTagsService } from '../services/user-tags.service';
 @Controller('/user/tag')
 export class UserTagsController {
   constructor(private userTagsService: UserTagsService) {}
@@ -33,10 +32,7 @@ export class UserTagsController {
 
   @Get('/my')
   @UseGuards(JwtAuthGuard)
-  async getMyTags(
-    @Req() { user }: Request,
-    @Res() res: Response,
-  ): Promise<Tag[]> {
+  async getMyTags(@Req() { user }: Request): Promise<Tag[]> {
     const { uid } = user as ITokenPayload;
     const tags = await this.userTagsService.findTagsCreatedByUser(uid);
     return tags;

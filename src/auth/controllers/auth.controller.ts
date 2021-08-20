@@ -21,13 +21,13 @@ export class AuthController {
   @Post('/signin')
   async register(@Body() userData: CreateUserDto, @Res() res: Response) {
     const token = await this.authService.register(userData, res);
-    return res.status(200).send(token);
+    return res.status(HttpStatus.CREATED).send(token);
   }
   @UseGuards(LocalAuthGuard)
   @Post('/login')
-  login(@Res() res: Response, @Req() req: Request): IToken {
+  login(@Res() res: Response, @Req() req: Request) {
     const result = this.authService.login(req.user as User, res);
-    return result;
+    return res.status(HttpStatus.OK).send(result);
   }
   @Post('/logout')
   async logout(@Res() res: Response) {

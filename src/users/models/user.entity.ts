@@ -1,5 +1,4 @@
-import { UserTag } from './../../tags/models/user-tag.entity';
-import { Tag } from './../../tags/models/tag.entity';
+import { Exclude } from 'class-transformer';
 import {
   BaseEntity,
   Column,
@@ -7,7 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
+import { UserTag } from '../../user-tag/models/user-tag.entity';
 
 @Entity()
 export class User extends BaseEntity {
