@@ -12,7 +12,7 @@
         "port": 5432,
         "driver": "PostgreSQL",
         "name": "postgres",
-        "database": "od_testing_db",
+        "database": "od_database",
         "username": "postgres",
         "password": "postgres"
       }
